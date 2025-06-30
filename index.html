@@ -1,0 +1,131 @@
+<!DOCTYPE html><html>
+<head>
+  <title>Login Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #362ed9, #1e197f);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    a{
+            text-decoration: none;
+        }
+        
+    .box {
+      background: white;
+      padding: 25px 20px;
+      margin: 0px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 490px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .box img {
+      width: 60px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      margin: 10px 0 5px;
+    }
+    p {
+      font-size: 14px;
+      color: gray;
+      margin-bottom: 20px;
+    }
+    label {
+      font-size: 14px;
+      text-align: left;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #271fc1;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    .signup {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>  <div class="box">
+    <img src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png" alt="login icon">
+    <h2>Creator Dashboard</h2>
+    <p>Sign in to access your analytics and content</p><form onsubmit="return goToNextPage()">
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" placeholder=" Enter your email" required autocomplete="on">
+
+  <label style="padding: 4px; padding-bottom: 3px;"   for="password">Password</label>
+  <input type="password" id="password" name="password" placeholder=" Enter your password" required maxlength="8">
+
+  <div class="options">
+    <div class="remember">
+      <input type="checkbox" id="remember">
+      <label style="padding: 3px;"   for="remember">Remember me</label>
+    </div>
+    <a href="#">Forgot password?</a>
+  </div>
+
+  <button type="submit">Sign In</button>
+</form>
+
+<div class="signup">
+  Don’t have an account? <a href="#">Sign up</a>
+</div>
+
+  </div>  <script>
+    function goToNextPage() {
+      const password = document.getElementById("password").value;
+      if (password.length !== 8) {
+        alert("Password must be exactly 8 characters long.");
+        return false;
+      }
+      window.location.href = "dashboard.html";
+      return false;
+    }
+  </script></body>
+</html>

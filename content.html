@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables from Audience.html for light theme */
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --sidebar-bg: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+            --metric-card-bg: #f9fafb;
+            --border-color: #eaeaea;
+            --btn-primary-bg: #2563eb;
+            --positive-color: #10b981;
+            --purple: #7e57c2;
+            --blue: #42a5f5;
+            --teal: #26a69a;
+            --orange: #ffa726;
+            --pink: #ec407a;
+            --dark-blue: #1e3a8a;
+        }
+a{
+            text-decoration: none;
+        }
+        
+        /* Dark Mode variables from Audience.html */
+        [data-theme="dark"] {
+            --bg-color: #121826;
+            --text-color: #e0e0e0;
+            --card-bg: #1a2439;
+            --sidebar-bg: linear-gradient(180deg, #0f1e3f 0%, #070d1c 100%);
+            --metric-card-bg: #1e2a47;
+            --border-color: #2a3a5a;
+            --btn-primary-bg: #3d75e6;
+            --positive-color: #10b981;
+        }
+
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            display: flex; /* Ensure main content sits next to sidebar */
+        }
+        
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--dark-blue);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none; /* Hidden by default, shown in media queries */
+        }
+        
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 25px 0;
+            height: 100vh;
+            position: fixed; 
+            /* Removed overflow-y: auto; to make it non-scrollable as per request.
+               If sidebar content exceeds 100vh, it will overflow. */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-container {
+            padding: 0 25px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: #60a5fa;
+        }
+        
+        .nav-title {
+            text-transform: uppercase;
+            font-size: 14px;
+            color: #93c5fd;
+            padding: 25px 25px 10px;
+            letter-spacing: 1px;
+        }
+        
+        .nav-links {
+            padding: 10px 0;
+        }
+        
+        .nav-item {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-item-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .nav-item:hover {
+            background: rgba(96, 165, 250, 0.15);
+        }
+        
+        .nav-item.active {
+            background: rgba(96, 165, 250, 0.25);
+            border-left: 4px solid #60a5fa;
+        }
+        
+        .nav-item i {
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main content styling */
+        .main-content {
+            margin-left: 250px; /* Offset for the fixed sidebar */
+            padding: 30px;
+            transition: margin 0.3s ease;
+            flex-grow: 1; /* Allow content to fill remaining space */
+            overflow-y: auto; /* Allow main content to scroll */
+            max-height: 100vh; /* Ensure main content doesn't push body height */
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            background-color: var(--bg-color); /* Ensure header background matches body */
+            /* Removed position: sticky, top, and z-index to make it scrollable */
+            padding: 30px 30px 10px 0; /* Adjust padding due to margin-left */
+        }
+        
+        .header-content {
+            max-width: 600px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+        
+        .section-desc {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        /* Theme toggle button */
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        /* Overlay for mobile menu */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        /* Content specific styles, adjusted for new theme */
+        .container {
+            padding: 0; /* Remove padding as main-content already has it */
+        }
+
+        h2 {
+            font-size: 22px; /* Adjusted to match audience.html h2 */
+            font-weight: 600; /* Adjusted to match audience.html h2 */
+            margin: 30px 0 15px;
+            color: var(--text-color);
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 25px 0 10px;
+            color: var(--text-color);
+        }
+
+        /* Search bar */
+        .search-container {
+            display: flex;
+            margin-bottom: 20px;
+            max-width: 400px;
+            border: 1px solid var(--border-color); /* Added border */
+            border-radius: 20px; /* Added border-radius */
+            overflow: hidden; /* Ensure border-radius applies */
+            background-color: var(--card-bg); /* Use card background */
+        }
+
+        .search-bar {
+            flex: 1;
+            padding: 10px 15px;
+            border: none; /* Removed individual border */
+            background-color: transparent; /* Transparent background */
+            color: var(--text-color);
+            font-size: 14px;
+            outline: none; /* Remove outline on focus */
+        }
+
+        .search-button {
+            padding: 0 15px;
+            background-color: var(--btn-primary-bg); /* Primary blue from Audience.html */
+            color: white;
+            border: none;
+            border-radius: 0; /* No radius on the button itself, handled by container */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .search-button:hover {
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        a{
+            text-decoration: none !important;
+        }
+        .tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-color); /* Changed to text-color for better contrast */
+            opacity: 0.7; /* Added opacity for inactive tabs */
+            transition: all 0.2s ease;
+        }
+
+        .tab.active {
+            color: var(--btn-primary-bg); /* Active color from Audience.html */
+            background-color: rgba(37, 99, 235, 0.1); /* Lighter shade of primary blue */
+            font-weight: 500;
+            opacity: 1; /* Full opacity for active tab */
+        }
+
+        .tab:hover:not(.active) {
+            background-color: var(--metric-card-bg); /* Hover color from Audience.html */
+            opacity: 0.9;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter {
+            padding: 8px 16px;
+            border-radius: 8px; /* Slightly more rounded */
+            border: 1px solid var(--border-color);
+            background-color: var(--metric-card-bg); /* Metric card background for filters */
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+
+        .filter:hover {
+            background-color: var(--border-color); /* Darker hover for filters */
+        }
+
+        .filter-dropdown {
+            position: absolute;
+            top: calc(100% + 5px); /* Adjusted position */
+            left: 0;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px; /* Consistent rounding */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* More pronounced shadow */
+            z-index: 100;
+            min-width: 180px; /* Increased width */
+            display: none;
+            overflow: hidden; /* For rounded corners */
+        }
+
+        .filter-dropdown.show {
+            display: block;
+        }
+
+        .filter-option {
+            padding: 10px 16px; /* Increased padding */
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .filter-option:hover {
+            background-color: var(--hover-color); /* Use a general hover color */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-bg);
+            border-radius: 12px; /* More rounded table */
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Matching card shadow */
+            margin-bottom: 25px; /* Consistent margin */
+        }
+
+        th {
+            text-align: left;
+            padding: 15px 20px; /* Increased padding */
+            font-weight: 600; /* Bolder font weight */
+            background-color: var(--metric-card-bg); /* Use metric card background for header */
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 15px 20px; /* Increased padding */
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: var(--metric-card-bg); /* Hover color for rows */
+        }
+
+        .monetized {
+            color: var(--positive-color); /* Positive color from Audience.html */
+            font-weight: 500;
+        }
+
+        .public {
+            color: var(--blue);
+            font-weight: 500;
+        }
+
+        .revenue {
+            color: var(--positive-color); /* Positive color for revenue */
+            font-weight: 500;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 25px; /* Consistent margin */
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 10px 15px; /* Increased padding */
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            border-radius: 8px; /* More rounded buttons */
+            min-width: 40px; /* Slightly larger minimum width */
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+
+        .page-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .page-btn.active {
+            background-color: var(--btn-primary-bg);
+            color: white;
+            border-color: var(--btn-primary-bg);
+        }
+
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--metric-card-bg); /* Dimmer background for disabled */
+        }
+        
+        /* Responsive design from Audience.html */
+        @media (max-width: 1200px) {
+            /* No specific changes needed from Audience.html media query */
+        }
+        
+        @media (max-width: 992px) {
+            /* No specific changes needed from Audience.html media query */
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 30px 15px;
+            }
+            
+            .header {
+                margin-top: 60px;
+                flex-direction: column;
+                align-items: flex-start; /* Align items to start when stacked */
+                gap: 15px;
+                padding: 20px 15px 10px 15px; /* Adjust header padding for mobile */
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            table {
+                /* On small screens, make table scrollable instead of shrinking */
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+            th, td {
+                min-width: 120px; /* Ensure minimum width for columns */
+            }
+
+            /* Ensure search bar and filters maintain layout on small screens */
+            .search-container {
+                /* flex-direction: column; */
+                border-radius: 8px; /* Adjust for stacked elements */
+            }
+            .search-bar {
+                border-radius: 8px 8px 0 0;
+            }
+            .search-button {
+                border-radius: 0 0 8px 8px;
+                padding: 10px 15px; /* Ensure button is tappable */
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                width: 100%;
+                text-align: center;
+            }
+            .filters {
+                flex-direction: column;
+            }
+            .filter {
+                width: 100%;
+            }
+            .filter-dropdown {
+                min-width: unset; /* Allow dropdown to fit content */
+                width: 100%; /* Make dropdown full width of parent filter */
+            }
+            .pagination {
+                flex-wrap: wrap;
+                justify-content: space-around;
+            }
+            .page-btn {
+                flex-grow: 1; /* Allow buttons to grow */
+                margin: 5px; /* Add some margin between buttons */
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .main-content {
+                padding: 20px 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .section-desc {
+                font-size: 14px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+        }
+        
+@media (max-width: 768px) {
+    .pagination {
+        /* Keep these for general layout */
+        display: flex;
+        justify-content: center; /* Or flex-start if you prefer left-aligned */
+        gap: 8px;
+        margin-top: 25px;
+        flex-wrap: nowrap; /* Ensure buttons stay on one line, but overflow is now handled by JS */
+        overflow-x: hidden; /* Hide overflow, JS will control visible buttons */
+        padding-bottom: 0; /* No need for padding for scrollbar */
+    }
+
+    .page-btn {
+        flex-shrink: 0;
+        margin: 0 2px; /* Adjust margin for tighter packing if needed */
+        min-width: 40px; /* Ensure buttons have a minimum width */
+    }
+
+    /* Add a class to hide buttons that are not within the visible range */
+    .page-btn.hidden-mobile {
+        display: none;
+    }
+}
+        
+        /* Hamburger animation */
+        .mobile-menu-toggle .fa-bars,
+        .mobile-menu-toggle .fa-times {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <div class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+    
+    <!-- Overlay for mobile menu -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Creator Analytics</span>
+            </div>
+        </div>
+        
+        <div class="nav-title">Analytics</div>
+        <div class="nav-links">
+            <a href="dashboard.html"> <!-- Link to Dashboard (adjust as needed) -->
+                <div class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span class="nav-text">Dashboard</span>
+                </div>
+            </a>
+            <a href="#"> <!-- Link to Content (current page) -->
+                <div class="nav-item active">
+                    <i class="fas fa-video"></i>
+                    <span class="nav-text">Content</span>
+                </div>
+            </a>
+            <a href="earning.html" class="nav-item-link"> <!-- Existing link to Earning2.html -->
+                <div class="nav-item">
+                    <i class="fas fa-wallet"></i>
+                    <span class="nav-text">Earnings</span>
+                </div>
+            </a>
+            <a href="Audience.html" class="nav-item-link"> <!-- Link to Audience.html -->
+                <div class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Audience</span>
+                </div>
+            </a>
+            <a href="setting.html" class="nav-item-link"> <!-- Link to Audience.html -->
+             <div class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span class="nav-text">Settings                </span>
+            </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="header-content">
+                <h1>Content</h1>
+                <p class="section-desc">Manage your content library</p>
+            </div>
+            <div class="user-info">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+            <h3>Search</h3>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search videos...">
+                <button class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-type="all">All</div>
+                <div class="tab" data-type="videos">Videos</div>
+                <div class="tab" data-type="shorts">Shorts</div>
+                <div class="tab" data-type="live">Live</div>
+            </div>
+            
+            <div class="filters">
+                <div class="filter" id="visibilityFilter">
+                    <span>Visibility</span>
+                    <span>▼</span>
+                    <div class="filter-dropdown">
+                        <div class="filter-option" data-value="all">All</div>
+                        <div class="filter-option" data-value="public">Public</div>
+                        <div class="filter-option" data-value="private">Private</div>
+                        <div class="filter-option" data-value="unlisted">Unlisted</div>
+                    </div>
+                </div>
+                <div class="filter" id="monetizationFilter">
+                    <span>Monetization</span>
+                    <span>▼</span>
+                    <div class="filter-dropdown">
+                        <div class="filter-option" data-value="all">All</div>
+                        <div class="filter-option" data-value="monetized">Monetized</div>
+                        <div class="filter-option" data-value="non-monetized">Non-Monetized</div>
+                    </div>
+                </div>
+            </div>
+            
+            <table id="contentTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Visibility</th>
+                        <th>Monetization</th>
+                        <th>Date</th>
+                        <th>Views</th>
+                        <th>Revenue</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Table content will be dynamically generated -->
+                </tbody>
+            </table>
+
+            <div class="pagination" id="pagination">
+                <div class="page-btn disabled" id="prevBtn">❮</div>
+                <!-- Dynamic page buttons will be inserted here -->
+                <div class="page-btn" id="nextBtn">❯</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to generate a random date within a range
+        function getRandomDate(start, end) {
+            const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+        }
+
+        // Generate more comprehensive mock data
+        const generateMockData = () => {
+            const data = [];
+            const titles = ["Abstract Art Tutorial", "Digital Painting Techniques", "Character Design Workshop", "Quick Watercolor Tips", "Live Portrait Drawing", "Oil Painting Basics", "Sketching Tutorial", "Live Q&A Session", "Acrylic Pouring Demo", "5-Minute Drawing Challenge", "Live Landscape Painting", "Color Theory Explained", "Digital Art Short", "Live Digital Painting", "Perspective Drawing", "Quick Sketch Tips", "Live Art Critique", "Watercolor Landscape", "10-Second Art Challenge", "Live Charcoal Drawing", "Portrait Painting Tutorial", "Digital Art Short", "Live Watercolor Demo", "Figure Drawing Basics", "Mastering Light & Shadow", "Procreate Workflow Tips", "Art History Bites", "Street Photography Guide", "Understanding Composition", "Sculpting Basics", "Ink Drawing Techniques", "Exploring Mixed Media", "Creative Block Solutions", "Daily Drawing Challenge", "Anime Character Creation", "Sci-Fi Concept Art", "Fantasy Creatures Tutorial", "Urban Sketching Tour", "Productivity for Artists", "Behind the Scenes: Studio Tour", "Timelapse Painting", "Podcast on Creativity", "Webinar: Art Marketing", "New Brush Set Review", "Drawing with Pastels", "Vector Art Fundamentals"];
+            const types = ["videos", "shorts", "live"];
+            const visibilities = ["public", "private", "unlisted"];
+            const monetizations = ["monetized", "non-monetized"];
+
+            const now = new Date();
+            const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
+
+            // Add data for 'Today'
+            data.push({
+                id: data.length + 1, title: "Today's Art Challenge", type: "shorts", visibility: "public", monetization: "monetized", date: now.toISOString().split('T')[0], views: Math.floor(Math.random() * 5000) + 1000, revenue: Math.floor(Math.random() * 100)
+            });
+
+            // Add data for 'This Week'
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)); // Monday of the current week
+            for (let i = 0; i < 3; i++) { // 3 more items this week
+                const d = new Date(startOfWeek.getTime() + Math.random() * (now.getTime() - startOfWeek.getTime()));
+                data.push({
+                    id: data.length + 1, title: titles[Math.floor(Math.random() * titles.length)], type: types[Math.floor(Math.random() * types.length)], visibility: visibilities[Math.floor(Math.random() * visibilities.length)], monetization: monetizations[Math.floor(Math.random() * monetizations.length)], date: d.toISOString().split('T')[0], views: Math.floor(Math.random() * 20000) + 5000, revenue: Math.floor(Math.random() * 500)
+                });
+            }
+
+            // Add data for 'This Month'
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            for (let i = 0; i < 7; i++) { // 7 more items this month
+                const d = new Date(startOfMonth.getTime() + Math.random() * (now.getTime() - startOfMonth.getTime()));
+                data.push({
+                    id: data.length + 1, title: titles[Math.floor(Math.random() * titles.length)], type: types[Math.floor(Math.random() * types.length)], visibility: visibilities[Math.floor(Math.random() * visibilities.length)], monetization: monetizations[Math.floor(Math.random() * monetizations.length)], date: d.toISOString().split('T')[0], views: Math.floor(Math.random() * 50000) + 10000, revenue: Math.floor(Math.random() * 1000)
+                });
+            }
+
+            // Add data for 'This Year'
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+            for (let i = 0; i < 15; i++) { // 15 more items this year
+                const d = new Date(startOfYear.getTime() + Math.random() * (now.getTime() - startOfYear.getTime()));
+                data.push({
+                    id: data.length + 1, title: titles[Math.floor(Math.random() * titles.length)], type: types[Math.floor(Math.random() * types.length)], visibility: visibilities[Math.floor(Math.random() * visibilities.length)], monetization: monetizations[Math.floor(Math.random() * monetizations.length)], date: d.toISOString().split('T')[0], views: Math.floor(Math.random() * 100000) + 20000, revenue: Math.floor(Math.random() * 2000)
+                });
+            }
+
+            // Add older data for 'All Time'
+            const fiveYearsAgo = new Date(now.getFullYear() - 5, 0, 1);
+            for (let i = 0; i < 50; i++) { // 50 more older items
+                data.push({
+                    id: data.length + 1, title: titles[Math.floor(Math.random() * titles.length)], type: types[Math.floor(Math.random() * types.length)], visibility: visibilities[Math.floor(Math.random() * visibilities.length)], monetization: monetizations[Math.floor(Math.random() * monetizations.length)], date: getRandomDate(fiveYearsAgo, now), views: Math.floor(Math.random() * 500000) + 50000, revenue: Math.floor(Math.random() * 5000)
+                });
+            }
+
+            return data;
+        };
+
+        const contentData = generateMockData();
+
+        // // Current filters and pagination state
+        // let currentState = {
+        //     searchQuery: '',
+        //     contentType: 'all',
+        //     visibility: 'all',
+        //     monetization: 'all',
+        //     dateRange: 'all',
+        //     currentPage: 1,
+        //     itemsPerPage: 10 // Increased items per page to show more data
+        // };
+
+        // DOM elements
+        const tableBody = document.getElementById('tableBody');
+        const searchBar = document.querySelector('.search-bar');
+        const searchButton = document.querySelector('.search-button');
+        const tabs = document.querySelectorAll('.tab');
+        const filters = document.querySelectorAll('.filter');
+        const filterOptions = document.querySelectorAll('.filter-option');
+        const pagination = document.getElementById('pagination');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            
+            // Set initial theme
+            document.body.setAttribute('data-theme', currentTheme);
+            
+            // Update icon based on current theme
+            if (currentTheme === 'dark') {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+            
+            // Toggle theme
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update icon
+                if (newTheme === 'dark') {
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+
+            // Mobile sidebar toggle
+            
+            // Toggle sidebar function
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                
+                // Update hamburger icon
+                const icon = mobileMenuToggle.querySelector('i');
+                if (sidebar.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+            
+            // Open/close sidebar with hamburger button
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            
+            // Close sidebar when clicking on overlay
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(e.target) && 
+                    !mobileMenuToggle.contains(e.target) &&
+                    sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            });
+            
+            // Close sidebar when a nav item is clicked on mobile
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+            
+            // Handle window resize
+            function handleResize() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    mobileMenuToggle.querySelector('i').classList.remove('fa-times');
+                    mobileMenuToggle.querySelector('i').classList.add('fa-bars');
+                }
+            }
+            
+            window.addEventListener('resize', handleResize);
+
+            // Initialize the table on page load
+            renderTable();
+        });
+
+        // Function to check if a date falls within the selected range
+        function isWithinDateRange(itemDateStr, range) {
+            const itemDate = new Date(itemDateStr);
+            const now = new Date();
+            now.setHours(0, 0, 0, 0); // Normalize 'now' to start of today for accurate comparisons
+
+            itemDate.setHours(0, 0, 0, 0); // Normalize itemDate to start of its day
+
+            switch (range) {
+                case 'all':
+                    return true;
+                case 'today':
+                    return itemDate.getTime() === now.getTime();
+                case 'week':
+                    const firstDayOfWeek = new Date(now);
+                    // Adjust to Monday (1) or Monday of previous week if now is Sunday (0)
+                    firstDayOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
+                    firstDayOfWeek.setHours(0,0,0,0);
+                    return itemDate >= firstDayOfWeek;
+                case 'month':
+                    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    firstDayOfMonth.setHours(0,0,0,0);
+                    return itemDate >= firstDayOfMonth;
+                case 'year':
+                    const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
+                    firstDayOfYear.setHours(0,0,0,0);
+                    return itemDate >= firstDayOfYear;
+                default:
+                    return true;
+            }
+        }
+
+        // Initialize the table
+        function renderTable() {
+            // Filter data based on current state
+            const filteredData = contentData.filter(item => {
+                // Search filter
+                const matchesSearch = item.title.toLowerCase().includes(currentState.searchQuery.toLowerCase());
+                
+                // Content type filter
+                const matchesType = currentState.contentType === 'all' || item.type === currentState.contentType;
+                
+                // Visibility filter
+                const matchesVisibility = currentState.visibility === 'all' || item.visibility === currentState.visibility;
+                
+                // Monetization filter
+                const matchesMonetization = currentState.monetization === 'all' || item.monetization === currentState.monetization;
+                
+                // Date filter
+                const matchesDate = isWithinDateRange(item.date, currentState.dateRange);
+                
+                return matchesSearch && matchesType && matchesVisibility && matchesMonetization && matchesDate;
+            });
+
+            // Pagination
+            const totalPages = Math.ceil(filteredData.length / currentState.itemsPerPage);
+            const startIndex = (currentState.currentPage - 1) * currentState.itemsPerPage;
+            const endIndex = startIndex + currentState.itemsPerPage;
+            const paginatedData = filteredData.slice(startIndex, endIndex);
+
+            // Clear table
+            tableBody.innerHTML = '';
+
+            // Populate table with filtered and paginated data
+            if (paginatedData.length === 0) {
+                const noDataRow = document.createElement('tr');
+                noDataRow.innerHTML = `<td colspan="6" style="text-align: center; padding: 20px;">No content found matching your filters.</td>`;
+                tableBody.appendChild(noDataRow);
+            } else {
+                paginatedData.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.title}</td>
+                        <td class="${item.visibility === 'public' ? 'public' : ''}">${item.visibility.charAt(0).toUpperCase() + item.visibility.slice(1)}</td>
+                        <td class="${item.monetization === 'monetized' ? 'monetized' : ''}">${item.monetization === 'monetized' ? 'Monetized' : 'Non-Monetized'}</td>
+                        <td>${item.date}</td>
+                        <td>${item.views.toLocaleString()}</td>
+                        <td class="revenue">${item.revenue > 0 ? '₹' + item.revenue : '-'}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            // Update pagination controls
+            updatePaginationControls(totalPages);
+        }
+
+        // Update pagination controls
+        function updatePaginationControls(totalPages) {
+            // Disable/enable prev/next buttons
+            prevBtn.classList.toggle('disabled', currentState.currentPage === 1);
+            nextBtn.classList.toggle('disabled', currentState.currentPage === totalPages || totalPages === 0);
+
+            // Update page buttons - only show relevant page numbers
+            const paginationContainer = document.getElementById('pagination');
+            // Clear existing dynamic page buttons, but keep prev/next
+            const dynamicPageBtns = paginationContainer.querySelectorAll('.page-btn[data-page]');
+            dynamicPageBtns.forEach(btn => btn.remove());
+
+            // Add new page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('div');
+                pageBtn.classList.add('page-btn');
+                pageBtn.dataset.page = i;
+                pageBtn.textContent = i;
+                if (i === currentState.currentPage) {
+                    pageBtn.classList.add('active');
+                }
+                pageBtn.addEventListener('click', () => {
+                    currentState.currentPage = parseInt(pageBtn.dataset.page);
+                    renderTable();
+                });
+                // Insert before nextBtn
+                paginationContainer.insertBefore(pageBtn, nextBtn);
+            }
+
+            if (totalPages <= 1) { // Hide pagination if only one or no pages
+                paginationContainer.style.display = 'none';
+            } else {
+                paginationContainer.style.display = 'flex';
+            }
+        }
+
+        // Event listeners
+        searchButton.addEventListener('click', () => {
+            currentState.searchQuery = searchBar.value;
+            currentState.currentPage = 1;
+            renderTable();
+        });
+
+        searchBar.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                currentState.searchQuery = searchBar.value;
+                currentState.currentPage = 1;
+                renderTable();
+            }
+        });
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentState.contentType = tab.dataset.type;
+                currentState.currentPage = 1;
+                renderTable();
+            });
+        });
+
+        filters.forEach(filter => {
+            const dropdown = filter.querySelector('.filter-dropdown');
+            // Close all other dropdowns when one is opened
+            filter.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent document click from immediately closing
+                filters.forEach(f => {
+                    if (f !== filter) {
+                        f.querySelector('.filter-dropdown').classList.remove('show');
+                    }
+                });
+                dropdown.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!filter.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        });
+
+        filterOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const filterElement = option.closest('.filter');
+                const filterType = filterElement.id.replace('Filter', '');
+                currentState[filterType] = option.dataset.value;
+                currentState.currentPage = 1; // Reset to first page on filter change
+                renderTable();
+                
+                // Update filter display text
+                const filterText = filterElement.querySelector('span:first-child');
+                filterText.textContent = option.textContent; // Set to selected option's text
+                
+                option.closest('.filter-dropdown').classList.remove('show');
+            });
+        });
+
+        // Pagination controls
+        prevBtn.addEventListener('click', () => {
+            if (currentState.currentPage > 1) {
+                currentState.currentPage--;
+                renderTable();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            // Recalculate total pages based on current filtered data, not just contentData
+            const filteredDataForPages = contentData.filter(item => {
+                const matchesSearch = item.title.toLowerCase().includes(currentState.searchQuery.toLowerCase());
+                const matchesType = currentState.contentType === 'all' || item.type === currentState.contentType;
+                const matchesVisibility = currentState.visibility === 'all' || item.visibility === currentState.visibility;
+                const matchesMonetization = currentState.monetization === 'all' || item.monetization === currentState.monetization;
+                const matchesDate = isWithinDateRange(item.date, currentState.dateRange);
+                return matchesSearch && matchesType && matchesVisibility && matchesMonetization && matchesDate;
+            });
+            const totalPages = Math.ceil(filteredDataForPages.length / currentState.itemsPerPage);
+
+            if (currentState.currentPage < totalPages) {
+                currentState.currentPage++;
+                renderTable();
+            }
+        });
+
+        // Current filters and pagination state
+        let currentState = {
+            searchQuery: '',
+            contentType: 'all',
+            visibility: 'all',
+            monetization: 'all',
+            dateRange: 'all',
+            currentPage: 1,
+            itemsPerPage: 10,
+            // New property for mobile visible pages
+            mobileVisiblePages: 3 // How many page buttons to show on mobile
+        };
+
+        // ... (rest of your existing JS code) ...
+
+        // Update pagination controls
+        function updatePaginationControls(totalPages) {
+            const paginationContainer = document.getElementById('pagination');
+
+            // Hide pagination completely if there's only one page or no data
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                return;
+            } else {
+                paginationContainer.style.display = 'flex';
+            }
+
+            // Clear existing dynamic page buttons, but keep prev/next
+            const dynamicPageBtns = paginationContainer.querySelectorAll('.page-btn[data-page]');
+            dynamicPageBtns.forEach(btn => btn.remove());
+
+            // Disable/enable prev/next buttons
+            prevBtn.classList.toggle('disabled', currentState.currentPage === 1);
+            nextBtn.classList.toggle('disabled', currentState.currentPage === totalPages);
+
+            // Hide prev button if on the first page
+            prevBtn.style.display = (currentState.currentPage === 1) ? 'none' : 'flex'; // Use 'flex' if it's a flex item, otherwise 'block'
+
+            // Determine which page numbers to show
+            let startPage, endPage;
+            if (window.innerWidth <= 768) { // Mobile view
+                const maxVisible = currentState.mobileVisiblePages;
+                const halfVisible = Math.floor(maxVisible / 2);
+
+                if (currentState.currentPage <= halfVisible) {
+                    startPage = 1;
+                    endPage = Math.min(maxVisible, totalPages);
+                } else if (currentState.currentPage + halfVisible >= totalPages) {
+                    startPage = Math.max(1, totalPages - maxVisible + 1);
+                    endPage = totalPages;
+                } else {
+                    startPage = currentState.currentPage - halfVisible;
+                    endPage = currentState.currentPage + (maxVisible - 1 - halfVisible);
+                }
+            } else { // Desktop view (show all pages or a larger range if desired)
+                startPage = 1;
+                endPage = totalPages;
+            }
+
+
+            // Add new page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('div');
+                pageBtn.classList.add('page-btn');
+                pageBtn.dataset.page = i;
+                pageBtn.textContent = i;
+
+                if (i === currentState.currentPage) {
+                    pageBtn.classList.add('active');
+                }
+
+                // Hide buttons that are outside the calculated visible range for mobile
+                if (window.innerWidth <= 768 && (i < startPage || i > endPage)) {
+                    pageBtn.classList.add('hidden-mobile');
+                }
+
+                pageBtn.addEventListener('click', () => {
+                    currentState.currentPage = parseInt(pageBtn.dataset.page);
+                    renderTable();
+                });
+                // Insert before nextBtn
+                paginationContainer.insertBefore(pageBtn, nextBtn);
+            }
+        }
+
+        // Add an event listener to re-render pagination on window resize
+        // This is important because the number of visible buttons changes based on screen width
+        window.addEventListener('resize', () => {
+            // Only re-render pagination if the display mode (mobile/desktop) has changed,
+            // or if it's currently mobile and the pagination needs adjustment.
+            renderTable(); // Re-render to recalculate visible pages
+        });
+
+        // ... (rest of your existing JS event listeners) ...
+
+        // Modify prev/next button logic slightly to trigger re-rendering for page numbers
+        prevBtn.addEventListener('click', () => {
+            if (currentState.currentPage > 1) {
+                currentState.currentPage--;
+                renderTable(); // renderTable will call updatePaginationControls
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const filteredDataForPages = contentData.filter(item => {
+                const matchesSearch = item.title.toLowerCase().includes(currentState.searchQuery.toLowerCase());
+                const matchesType = currentState.contentType === 'all' || item.type === currentState.contentType;
+                const matchesVisibility = currentState.visibility === 'all' || item.visibility === currentState.visibility;
+                const matchesMonetization = currentState.monetization === 'all' || item.monetization === currentState.monetization;
+                const matchesDate = isWithinDateRange(item.date, currentState.dateRange);
+                return matchesSearch && matchesType && matchesVisibility && matchesMonetization && matchesDate;
+            });
+            const totalPages = Math.ceil(filteredDataForPages.length / currentState.itemsPerPage);
+
+            if (currentState.currentPage < totalPages) {
+                currentState.currentPage++;
+                renderTable(); // renderTable will call updatePaginationControls
+            }
+        });
+    </script>
+</body>
+</html>

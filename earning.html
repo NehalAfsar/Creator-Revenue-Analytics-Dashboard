@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Analytics Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/Earning2_style.css">
+    <style>
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <div class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+    
+    <!-- Overlay for mobile menu -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> Data exported successfully!
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Creator Analytics</span>
+            </div>
+        </div>
+        
+        <div class="nav-title">Analytics</div>
+        <div class="nav-links">
+            <a href="dashboard.html">
+            <div class="nav-item" data-page="dashboard">
+                <i class="fas fa-chart-pie"></i>
+                <span class="nav-text">Dashboard</span>
+            </div>
+            </a>
+            <a href="content.html">
+            <div class="nav-item" data-page="content">
+                <i class="fas fa-video"></i>
+                <span class="nav-text">Content</span>
+            </div>
+            </a>
+            <a href="#" class="nav-item-link">
+            <div class="nav-item active" data-page="earnings">
+                <i class="fas fa-wallet"></i>
+                <span class="nav-text">Earnings</span>
+            </div>
+            </a>
+            <a href="Audience.html" class="nav-item-link">
+                <div class="nav-item" data-page="audience">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-text">Audience</span>
+                </div>
+            </a>
+            <a href="setting.html">
+             <div class="nav-item" data-page="preferences">
+                <i class="fas fa-cog"></i>
+                <span class="nav-text">Setting</span>
+            </div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Earnings Report</h1>
+            <div class="user-info">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="user-icon" id="refreshData">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <p class="section-desc">Detailed breakdown of your revenue across different platforms and content.</p>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Total Earnings</div>
+                    <div class="metric-value" id="totalEarnings">₹2,70,000</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-title">Total Views</div>
+                    <div class="metric-value" id="totalViews">1.2 M</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-title">Av. Session Length</div>
+                    <div class="metric-value" id="avgSession">20m 34s</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-title">Revenue Over Time</div>
+                    <div class="metric-value" id="revenueValue">₹12,000</div>
+                    <div class="metric-detail">Last 30 Days <span class="positive" id="revenueChange">+10%</span></div>
+                </div>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-title">Pending Earnings</div>
+                    <div class="stat-value" id="pendingEarnings">+84,000</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-title">Earnings Growth</div>
+                    <div class="stat-value positive" id="earningsGrowth">+86%</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-title">Revenue Per Content Growth</div>
+                    <div class="stat-value positive" id="revenuePerContent">+34%</div>
+                </div>
+            </div>
+            
+            <!-- Revenue Graph Section -->
+            <div class="graph-container">
+                <div class="graph-header">
+                    <div class="graph-title">Revenue Trend (Last 6 Months)</div>
+                    <div class="graph-actions">
+                        <button class="graph-btn active" data-period="monthly">Monthly</button>
+                        <button class="graph-btn" data-period="quarterly">Quarterly</button>
+                        <button class="graph-btn" data-period="yearly">Yearly</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Content Earnings</h2>
+            </div>
+            
+            <div class="content-earnings-grid" id="contentEarningsContainer">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-primary" id="exportBtn">
+                    <i class="fas fa-file-export"></i> Export Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="javascript/Earning2_script.js"></script>
+</body>
+</html>
