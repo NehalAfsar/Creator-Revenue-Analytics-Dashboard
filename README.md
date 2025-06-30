@@ -54,19 +54,33 @@ The project has the following file structure:
 
 .
 ├── index.html                # Login Page
+
 ├── dashboard.html            # Main Dashboard Page
+
 ├── content.html              # Content Management Page
+
 ├── earning.html              # Earnings Report Page
+
 ├── Audience.html             # Audience Analytics Page
+
 ├── setting.html              # Settings Page
+
 ├── css/
+
 │   ├── Audience_style.css    # Styles for Audience and shared components
+
 │   ├── Earning2_style.css    # Styles for Earnings page
+
 │   └── settings.css          # Styles for Settings page
+
 └── javascript/
+
     ├── Audience_script.js    # JavaScript for Audience page functionalities
+    
     ├── content_script.js     # JavaScript for Content page functionalities (currently inlined in content.html)
+    
     └── Earning2_script.js    # JavaScript for Earnings page functionalities
+    
 
 (Note: Some JavaScript code might be inlined directly within the HTML files for simplicity in this version.)
 
