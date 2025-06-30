@@ -1,4 +1,5 @@
-Creator Analytics Dashboard
+#Creator Analytics Dashboard
+
 This project is a web-based Creator Analytics Dashboard designed to help content creators monitor their performance across various metrics, manage content, track earnings, understand their audience, and configure settings.
 
 Features
